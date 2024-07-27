@@ -4,12 +4,12 @@
   box-sizing: border-box;
 }
 .App-header {
-  color: red;
+  color: #e1464b;
   font-weight: 800;
-  font-size: 3rem;
+  font-size: 2.5rem;
   display: flex;
   align-items: center;
-  border-bottom: 4px solid red;
+  border-bottom: 4px solid #e1464b;
 }
 .App-header img {
   height: 12rem;
@@ -18,9 +18,9 @@
   padding: 2rem;
 }
 .App-footer {
-  margin-top: 11rem;
+  margin-top: 7rem;
   text-align: center;
-  border-top: 4px solid red;
+  border-top: 4px solid #e1464b;
   padding-top: 0.5rem;
 }
 .userEmail {
