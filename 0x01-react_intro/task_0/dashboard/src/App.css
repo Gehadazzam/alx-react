@@ -1,0 +1,25 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.App-header {
+  color: red;
+  font-weight: 800;
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 4px solid red;
+}
+.App-header img {
+  height: 12rem;
+}
+.App-body {
+  padding: 2rem;
+}
+.App-footer {
+  margin-top: 18rem;
+  text-align: center;
+  border-top: 4px solid red;
+  padding-top: 0.5rem;
+}
