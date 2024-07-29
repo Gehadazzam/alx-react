@@ -1,16 +1,20 @@
-import "./App.css";
-import displayHEader from "../Header/Header";
+// App.js
+import React from "react";
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
+import Login from "../Login/Login";
+import Notifications from "../Notifications";
+
 function App() {
   return (
-    <div className="App">
-      displayHEader()
-      <main className="App-body">
-        <p>Login to access the full dashboard</p>
-      </main>
-      <footer className="App-footer">
-        <p>Copyright 2020 - Holberton School</p>
-      </footer>
-    </div>
+    <>
+      {Notifications()}
+      <div className="App">
+        <Header />
+        <Login />
+        <Footer />
+      </div>
+    </>
   );
 }
 

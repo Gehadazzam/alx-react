@@ -1,5 +1,7 @@
+import React from "react";
 import "./Header.css";
-function displayHEader() {
+import logo from "../logo.jpg";
+function Header() {
   return (
     <>
       <header className="App-header">
@@ -9,4 +11,4 @@ function displayHEader() {
     </>
   );
 }
-export default displayHEader;
+export default Header;

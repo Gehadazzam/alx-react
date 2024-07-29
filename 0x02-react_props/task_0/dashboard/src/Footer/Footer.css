@@ -1,0 +1,11 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.App-footer {
+  margin-top: 7rem;
+  text-align: center;
+  border-top: 4px solid #e1464b;
+  padding-top: 0.5rem;
+}
