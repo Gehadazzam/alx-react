@@ -1,0 +1,13 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.App-header {
+  color: red;
+  font-weight: 800;
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 4px solid red;
+}
