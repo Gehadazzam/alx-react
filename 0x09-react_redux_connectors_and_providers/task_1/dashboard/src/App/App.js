@@ -10,8 +10,17 @@ import BodySection from "../BodySection/BodySection";
 import { StyleSheet, css } from "aphrodite";
 import { AppContext } from "./AppContext";
 import { connect } from "react-redux";
+import {
+  displayNotificationDrawer,
+  hideNotificationDrawer,
+} from "../actions/uiActionCreators";
 
 const colorPrimary = "#d93654";
+
+const mapDispatchToProps = {
+  displayNotificationDrawer,
+  hideNotificationDrawer,
+};
 
 const mapStateToProps = (state) => {
   return {
