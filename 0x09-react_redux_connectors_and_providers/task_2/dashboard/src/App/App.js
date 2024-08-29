@@ -13,21 +13,21 @@ import { connect } from "react-redux";
 import {
   displayNotificationDrawer,
   hideNotificationDrawer,
+  loginRequest,
 } from "../actions/uiActionCreators";
-
-const colorPrimary = "#d93654";
 
 const mapDispatchToProps = {
   displayNotificationDrawer,
   hideNotificationDrawer,
+  login: loginRequest,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    isLoggedIn: state.uiReducer.isUserLoggedIn,
-    displayDrawer: state.uiReducer.isNotificationDrawerVisible,
-  };
-};
+const colorPrimary = "#d93654";
+
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.uiReducer.isUserLoggedIn,
+  displayDrawer: state.uiReducer.isNotificationDrawerVisible,
+});
 
 const styles = StyleSheet.create({
   App: {
@@ -55,19 +55,12 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.handleKeyDownPress = this.handleKeyDownPress.bind(this);
-    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
-    this.handleHideDrawer = this.handleHideDrawer.bind(this);
-    this.logIn = this.logIn.bind(this);
     this.markNotificationAsRead = this.markNotificationAsRead.bind(this);
 
     this.state = {
       user: {
         email: "",
         password: "",
-        isLoggedIn: false,
-      },
-      logOut: () => {
-        this.setState({ user: { email: "", password: "", isLoggedIn: false } });
       },
       listNotifications: [
         { id: 1, type: "default", value: "New course available" },
@@ -86,7 +79,7 @@ class App extends React.Component {
   handleKeyDownPress(event) {
     if (event.ctrlKey && event.key === "h") {
       alert("Logging you out");
-      this.state.logOut();
+      this.props.logout();
     }
   }
 
@@ -98,42 +91,37 @@ class App extends React.Component {
     document.removeEventListener("keydown", this.handleKeyDownPress);
   }
 
-  logIn(email, password) {
-    this.setState({
-      user: { email, password, isLoggedIn: true },
-    });
-  }
-
-  logOut() {
-    this.setState({ user: { email: "", password: "", isLoggedIn: false } });
-  }
-
   markNotificationAsRead(id) {
-    this.setState((prevState) => {
-      const updatedNotifications = prevState.listNotifications.filter(
+    this.setState((prevState) => ({
+      listNotifications: prevState.listNotifications.filter(
         (notification) => notification.id !== id
-      );
-      return { listNotifications: updatedNotifications };
-    });
+      ),
+    }));
   }
 
   render() {
-    const { displayDrawer, isLoggedIn } = this.props;
+    const {
+      displayDrawer,
+      isLoggedIn,
+      displayNotificationDrawer,
+      hideNotificationDrawer,
+      login,
+    } = this.props;
 
     return (
       <AppContext.Provider
         value={{
           user: this.state.user,
-          logout: this.state.logOut,
+          logout: this.props.logout,
         }}
       >
         <React.Fragment>
           <div className="root-notifications">
             <Notifications
               listNotifications={this.state.listNotifications}
-              displayDrawer={displayDrawer} // Using prop from Redux
-              handleDisplayDrawer={this.handleDisplayDrawer}
-              handleHideDrawer={this.handleHideDrawer}
+              displayDrawer={displayDrawer}
+              handleDisplayDrawer={displayNotificationDrawer}
+              handleHideDrawer={hideNotificationDrawer}
               markNotificationAsRead={this.markNotificationAsRead}
             />
           </div>
@@ -141,12 +129,12 @@ class App extends React.Component {
             <Header />
             <div className="App-body">
               {isLoggedIn ? (
-                <BodySectionWithMarginBottom title={"Course list"}>
+                <BodySectionWithMarginBottom title="Course list">
                   <CourseList listCourses={this.listCourses} />
                 </BodySectionWithMarginBottom>
               ) : (
-                <BodySectionWithMarginBottom title={"Log in to continue"}>
-                  <Login logIn={this.logIn} />
+                <BodySectionWithMarginBottom title="Log in to continue">
+                  <Login logIn={login} />
                 </BodySectionWithMarginBottom>
               )}
               <BodySection title="News from the school">
@@ -191,4 +179,4 @@ class App extends React.Component {
   }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
