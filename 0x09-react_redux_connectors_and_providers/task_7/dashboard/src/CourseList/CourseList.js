@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CourseListRow from "./CourseListRow";
 import CourseShape from "./CourseShape";
 import PropTypes from "prop-types";
 import { css, StyleSheet } from "aphrodite";
+import { connect } from "react-redux";
+import {
+  fetchCourses,
+  selectCourse,
+  unSelectCourse,
+} from "../actions/courseActionCreators";
+import { allCoursesSelector } from "../selectors/courseSelector";
 
 const styles = StyleSheet.create({
   table: {
@@ -13,7 +20,24 @@ const styles = StyleSheet.create({
   },
 });
 
-function CourseList({ listCourses }) {
+function CourseList({
+  listCourses,
+  fetchCourses,
+  selectCourse,
+  unSelectCourse,
+}) {
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
+
+  const onChangeRow = (id, checked) => {
+    if (checked) {
+      selectCourse(id);
+    } else {
+      unSelectCourse(id);
+    }
+  };
+
   return (
     <table id="CourseList" className={css(styles.table)}>
       <thead>
@@ -26,11 +50,13 @@ function CourseList({ listCourses }) {
       </thead>
       <tbody>
         {listCourses.length > 0 ? (
-          listCourses.map(({ id, name, credit }) => (
+          listCourses.map(({ id, name, credit, isSelected }) => (
             <CourseListRow
               key={id}
               textFirstCell={name}
               textSecondCell={credit}
+              isChecked={isSelected}
+              onChangeRow={onChangeRow}
             />
           ))
         ) : (
@@ -47,6 +73,19 @@ CourseList.defaultProps = {
 
 CourseList.propTypes = {
   listCourses: PropTypes.arrayOf(CourseShape),
+  fetchCourses: PropTypes.func.isRequired,
+  selectCourse: PropTypes.func.isRequired,
+  unSelectCourse: PropTypes.func.isRequired,
 };
 
-export default CourseList;
+const mapStateToProps = (state) => ({
+  listCourses: allCoursesSelector(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchCourses: () => dispatch(fetchCourses()),
+  selectCourse: (id) => dispatch(selectCourse(id)),
+  unSelectCourse: (id) => dispatch(unSelectCourse(id)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CourseList);
