@@ -4,6 +4,7 @@ import {
   SELECT_COURSE,
   UNSELECT_COURSE,
   FETCH_COURSE_SUCCESS,
+  SET_COURSES,
 } from "./courseActionTypes";
 export const boundSelectCourse = (dispatch) => {
   return bindActionCreators({ selectCourse }, dispatch);
@@ -16,6 +17,13 @@ export const boundUnSelectCourse = (dispatch) => {
 export const fetchCourseSuccess = (data) => {
   return {
     type: FETCH_COURSE_SUCCESS,
+    data,
+  };
+};
+
+export const setCourses = (data) => {
+  return {
+    type: SET_COURSES,
     data,
   };
 };
@@ -34,6 +42,13 @@ unSelectCourse = (index) => {
   };
 };
 
+export const fetchCourses = (dispatch) => {
+  fetch("/dist/courses.json")
+    .then((response) => response.json())
+    .then((data) => dispatch(setCourses(data)))
+    .catch((error) => console.error("Error fetching courses:", error));
+};
+
 export const courseReducer = (state = [], action) => {
   switch (action.type) {
     case FETCH_COURSE_SUCCESS:
@@ -49,6 +64,11 @@ export const courseReducer = (state = [], action) => {
       return state.map((course) =>
         course.id === action.index ? { ...course, isSelected: false } : course
       );
+    case SET_COURSES:
+      return action.data.map((course) => ({
+        ...course,
+        isSelected: false,
+      }));
     default:
       return state;
   }
