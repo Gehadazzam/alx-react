@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import logo from "../assets/Holberton-logo.jpg";
 import { css, StyleSheet } from "aphrodite";
-import { AppContext } from "../App/AppContext";
+import { connect } from "react-redux";
+import { logout } from "../actions";
 
 const colorPrimary = "#d93654";
 
@@ -30,11 +31,13 @@ const styles = StyleSheet.create({
   },
 });
 
-class Header extends React.Component {
-  static contextType = AppContext;
+const mapStateToProps = (state) => {
+  return { user: state.user };
+};
 
+class Header extends React.Component {
   render() {
-    const { user, logOut } = this.context;
+    const { user, logout } = this.props;
 
     return (
       <>
@@ -46,7 +49,7 @@ class Header extends React.Component {
           <section id="logoutSection">
             <p>
               Welcome <strong>{user.email}</strong> (
-              <a href="#" className={css(styles.link)} onClick={logOut}>
+              <a href="#" className={css(styles.link)} onClick={logout}>
                 Log out
               </a>
               )
@@ -58,4 +61,4 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export default connect(mapStateToProps, { logout })(Header);
