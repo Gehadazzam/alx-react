@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import close_icon from "../assets/close-icon.png";
 import NotificationItem from "./NotificationItem";
 import PropTypes from "prop-types";
@@ -92,9 +92,18 @@ const styles = StyleSheet.create({
   },
 });
 
-class Notifications extends React.PureComponent {
+class Notifications extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      messages: [],
+    };
+  }
+
+  componentDidMount() {
+    this.props.fetchNotifications().then((notifications) => {
+      this.setState({ messages: notifications });
+    });
   }
 
   render() {
@@ -126,15 +135,14 @@ class Notifications extends React.PureComponent {
             </button>
             <p>Here is the list of notifications</p>
             <ul className={css(styles.ulStyling)}>
-              {this.props.listNotifications &&
-              this.props.listNotifications.length > 0 ? (
-                this.props.listNotifications.map((notification, index) => (
+              {this.state.messages.length > 0 ? (
+                this.state.messages.map((message, index) => (
                   <NotificationItem
                     key={index}
-                    type={notification.type}
-                    value={notification.value}
-                    html={notification.html}
-                    id={notification.id}
+                    type={message.type}
+                    value={message.value}
+                    html={message.html}
+                    id={message.id}
                     markAsRead={this.props.markNotificationAsRead}
                   />
                 ))
@@ -151,7 +159,7 @@ class Notifications extends React.PureComponent {
 
 Notifications.defaultProps = {
   displayDrawer: false,
-  listNotifications: [],
+  fetchNotifications: () => {},
   handleDisplayDrawer: PropTypes.func,
   handleHideDrawer: PropTypes.func,
   markNotificationAsRead: PropTypes.func,
@@ -159,7 +167,7 @@ Notifications.defaultProps = {
 
 Notifications.propTypes = {
   displayDrawer: PropTypes.bool,
-  listNotifications: PropTypes.arrayOf(NotificationItemShape),
+  fetchNotifications: PropTypes.func,
   handleDisplayDrawer: () => {},
   handleHideDrawer: () => {},
   markNotificationAsRead: () => {},
