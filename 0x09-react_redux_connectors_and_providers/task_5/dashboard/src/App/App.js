@@ -91,14 +91,6 @@ class App extends React.Component {
     document.removeEventListener("keydown", this.handleKeyDownPress);
   }
 
-  markNotificationAsRead(id) {
-    this.setState((prevState) => ({
-      listNotifications: prevState.listNotifications.filter(
-        (notification) => notification.id !== id
-      ),
-    }));
-  }
-
   render() {
     const {
       displayDrawer,
