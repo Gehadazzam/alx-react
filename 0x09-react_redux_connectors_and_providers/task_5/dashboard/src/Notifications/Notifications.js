@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import close_icon from "../assets/close-icon.png";
 import NotificationItem from "./NotificationItem";
 import PropTypes from "prop-types";
-import NotificationItemShape from "./NotificationItemShape";
+import { connect } from "react-redux";
+import { fetchNotifications } from "../actions/notificationActions"; // Import your action
 
 import { css, StyleSheet } from "aphrodite";
 
@@ -92,70 +93,67 @@ const styles = StyleSheet.create({
   },
 });
 
-class Notifications extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      messages: [],
-    };
-  }
+const Notifications = ({
+  displayDrawer,
+  listNotifications,
+  fetchNotifications,
+}) => {
+  const [messages, setMessages] = useState([]);
 
-  componentDidMount() {
-    this.props.fetchNotifications().then((notifications) => {
-      this.setState({ messages: notifications });
+  useEffect(() => {
+    fetchNotifications().then((notifications) => {
+      setMessages(notifications);
     });
-  }
+  }, [fetchNotifications]);
 
-  render() {
-    return (
-      <React.Fragment>
-        <div
-          className={css(styles.MenuItem)}
-          onClick={this.props.handleDisplayDrawer}
-        >
-          {this.props.displayDrawer ? (
-            <p className={css(styles.MenuItemHidden)}>&nbsp;</p>
-          ) : (
-            <p>Your notifications</p>
-          )}
-        </div>
-        {this.props.displayDrawer && (
-          <div className={css(styles.Notification)}>
-            <button
-              type="button"
-              aria-label="Close"
-              className={css(styles.closeButton)}
-              onClick={this.props.handleHideDrawer}
-            >
-              <img
-                src={close_icon}
-                alt="Close icon"
-                style={{ width: "24px", height: "24px" }}
-              />
-            </button>
-            <p>Here is the list of notifications</p>
-            <ul className={css(styles.ulStyling)}>
-              {this.state.messages.length > 0 ? (
-                this.state.messages.map((message, index) => (
-                  <NotificationItem
-                    key={index}
-                    type={message.type}
-                    value={message.value}
-                    html={message.html}
-                    id={message.id}
-                    markAsRead={this.props.markNotificationAsRead}
-                  />
-                ))
-              ) : (
-                <li>No new notification for now</li>
-              )}
-            </ul>
-          </div>
+  return (
+    <React.Fragment>
+      <div
+        className={css(styles.MenuItem)}
+        onClick={displayDrawer ? () => {} : () => fetchNotifications()}
+      >
+        {displayDrawer ? (
+          <p className={css(styles.MenuItemHidden)}>&nbsp;</p>
+        ) : (
+          <p>Your notifications</p>
         )}
-      </React.Fragment>
-    );
-  }
-}
+      </div>
+      {displayDrawer && (
+        <div className={css(styles.Notification)}>
+          <button
+            type="button"
+            aria-label="Close"
+            className={css(styles.closeButton)}
+            onClick={displayDrawer ? () => {} : () => fetchNotifications()}
+          >
+            <img
+              src={close_icon}
+              alt="Close icon"
+              style={{ width: "24px", height: "24px" }}
+            />
+          </button>
+          <p>Here is the list of notifications</p>
+          <ul className={css(styles.ulStyling)}>
+            {messages.length > 0 ? (
+              messages.map((message, index) => (
+                <NotificationItem
+                  key={index}
+                  type={message.type}
+                  value={message.value}
+                  html={message.html}
+                  id={message.id}
+                  markAsRead={() => {}}
+                />
+              ))
+            ) : (
+              <li>No new notification for now</li>
+            )}
+          </ul>
+        </div>
+      )}
+    </React.Fragment>
+  );
+};
 
 Notifications.defaultProps = {
   displayDrawer: false,
@@ -167,10 +165,13 @@ Notifications.defaultProps = {
 
 Notifications.propTypes = {
   displayDrawer: PropTypes.bool,
-  fetchNotifications: PropTypes.func,
-  handleDisplayDrawer: () => {},
-  handleHideDrawer: () => {},
-  markNotificationAsRead: () => {},
+  listNotifications: PropTypes.array,
+  fetchNotifications: PropTypes.func.isRequired, // Update PropTypes
 };
 
-export default Notifications;
+Notifications.defaultProps = {
+  displayDrawer: false,
+  listNotifications: [],
+};
+
+export default connect(null, { fetchNotifications })(Notifications);

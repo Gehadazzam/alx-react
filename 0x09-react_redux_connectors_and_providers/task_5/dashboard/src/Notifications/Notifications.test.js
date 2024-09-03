@@ -1,5 +1,5 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 import Notifications from "./Notifications";
 import NotificationItem from "./NotificationItem";
 import { getLatestNotification } from "../utils/utils";
@@ -151,6 +151,14 @@ describe("Notifications Component rendering tests", () => {
     );
     wrapper.find("button").at(0).simulate("click");
     expect(handleHideDrawer).toHaveBeenCalled();
+    jest.restoreAllMocks();
+  });
+
+  it("calls fetchNotifications when the component is mounted", () => {
+    const fetchNotifications = jest.fn();
+    jest.spyOn(React, "useEffect").mockImplementationOnce((fn) => fn());
+    mount(<Notifications fetchNotifications={fetchNotifications} />);
+    expect(fetchNotifications).toHaveBeenCalled();
     jest.restoreAllMocks();
   });
 });
