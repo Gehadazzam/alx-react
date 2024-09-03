@@ -6,8 +6,9 @@ import { connect } from "react-redux";
 import {
   fetchNotifications,
   markNotificationAsRead,
+  setNotificationFilter,
 } from "../actions/notificationActions"; // Import your action
-import { getUnreadNotifications } from "../selectors/notificationSelectors"; // Import the selector
+import { getFilteredNotifications } from "../selectors/notificationSelectors"; // Import the selector
 
 import { css, StyleSheet } from "aphrodite";
 
@@ -95,6 +96,10 @@ const styles = StyleSheet.create({
       background: "gray",
     },
   },
+  filterButton: {
+    margin: "10px",
+    cursor: "pointer",
+  },
 });
 
 const Notifications = ({
@@ -102,6 +107,7 @@ const Notifications = ({
   listNotifications,
   fetchNotifications,
   markNotificationAsRead,
+  setNotificationFilter,
 }) => {
   const [messages, setMessages] = useState([]);
 
@@ -110,6 +116,10 @@ const Notifications = ({
       setMessages(notifications);
     });
   }, [fetchNotifications]);
+
+  const handleFilterChange = (filter) => {
+    setNotificationFilter(filter);
+  };
 
   return (
     <React.Fragment>
@@ -138,6 +148,20 @@ const Notifications = ({
             />
           </button>
           <p>Here is the list of notifications</p>
+          <div>
+            <button
+              className={css(styles.filterButton)}
+              onClick={() => handleFilterChange("URGENT")}
+            >
+              ‼️
+            </button>
+            <button
+              className={css(styles.filterButton)}
+              onClick={() => handleFilterChange("DEFAULT")}
+            >
+              💠
+            </button>
+          </div>
           <ul className={css(styles.ulStyling)}>
             {messages.length > 0 ? (
               messages.map((message, index) => (
@@ -173,6 +197,7 @@ Notifications.propTypes = {
   listNotifications: PropTypes.array,
   fetchNotifications: PropTypes.func.isRequired, // Update PropTypes
   markNotificationAsRead: PropTypes.func.isRequired, // Add PropTypes for markNotificationAsRead
+  setNotificationFilter: PropTypes.func.isRequired, // Add PropTypes for setNotificationFilter
 };
 
 Notifications.defaultProps = {
@@ -182,7 +207,7 @@ Notifications.defaultProps = {
 
 export default connect(
   (state) => ({
-    listNotifications: getUnreadNotifications(state),
+    listNotifications: getFilteredNotifications(state),
   }),
-  { fetchNotifications, markNotificationAsRead }
+  { fetchNotifications, markNotificationAsRead, setNotificationFilter }
 )(Notifications);
