@@ -171,4 +171,24 @@ describe("Notifications Component rendering tests", () => {
     expect(markNotificationAsRead).toHaveBeenCalled();
     jest.restoreAllMocks();
   });
+
+  it("Clicking on the first button should call setNotificationFilter with URGENT", () => {
+    const setNotificationFilter = jest.fn();
+    const wrapper = shallow(
+      <Notifications setNotificationFilter={setNotificationFilter} />
+    );
+    wrapper.find("button").at(0).simulate("click");
+    expect(setNotificationFilter).toHaveBeenCalledWith("URGENT");
+    jest.restoreAllMocks();
+  });
+
+  it("Clicking on the second button should call setNotificationFilter with DEFAULT", () => {
+    const setNotificationFilter = jest.fn();
+    const wrapper = shallow(
+      <Notifications setNotificationFilter={setNotificationFilter} />
+    );
+    wrapper.find("button").at(1).simulate("click");
+    expect(setNotificationFilter).toHaveBeenCalledWith("DEFAULT");
+    jest.restoreAllMocks();
+  });
 });

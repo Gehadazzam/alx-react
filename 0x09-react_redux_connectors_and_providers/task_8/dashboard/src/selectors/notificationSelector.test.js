@@ -3,6 +3,7 @@ import {
   filterTypeSelected,
   getNotifications,
   getUnreadNotifications,
+  getUnreadUrgentNotifications,
 } from "./notificationSelector";
 
 describe("notificationSelector", () => {
@@ -55,5 +56,17 @@ describe("notificationSelector", () => {
     );
     expect(unreadNotifications.getIn([3, "value"])).toBe("New data available");
     expect(unreadNotifications.get(2)).toBeUndefined();
+  });
+
+  it("should return a list of unread urgent message entities from the reducer", () => {
+    const unreadUrgentNotifications =
+      getUnreadUrgentNotifications(initialState);
+    expect(unreadUrgentNotifications).toBeInstanceOf(Map);
+    expect(unreadUrgentNotifications.size).toBe(1);
+    expect(unreadUrgentNotifications.getIn([3, "value"])).toBe(
+      "New data available"
+    );
+    expect(unreadUrgentNotifications.get(1)).toBeUndefined();
+    expect(unreadUrgentNotifications.get(2)).toBeUndefined();
   });
 });
