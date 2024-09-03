@@ -25,6 +25,11 @@ function uiReducer(state = initialState, action) {
         ...state,
         isNotificationDrawerVisible: false,
       };
+    case LOGIN:
+      return {
+        ...state,
+        user: action.user,
+      };
     case LOGIN_SUCCESS:
       return {
         ...state,
@@ -39,6 +44,7 @@ function uiReducer(state = initialState, action) {
       return {
         ...state,
         isUserLoggedIn: false,
+        user: null,
       };
     default:
       return state;
